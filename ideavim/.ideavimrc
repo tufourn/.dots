@@ -1,0 +1,28 @@
+let mapleader = " "
+
+" Sets
+set incsearch
+set hlsearch
+set scrolloff=10
+set number relativenumber
+
+" Harpooner
+nmap <C-h> <action>(HarpoonerOpenFile0)
+nmap <C-t> <action>(HarpoonerOpenFile1)
+nmap <C-n> <action>(HarpoonerOpenFile2)
+nmap <C-s> <action>(HarpoonerOpenFile3)
+nmap <leader>a <action>(HarpoonerAddFile)
+nmap <C-e> <action>(HarpoonerQuickMenu)
+
+" Move lines
+vmap J <action>(MoveLineDown)
+vmap K <action>(MoveLineUp)
+
+" Tab navigation
+nmap <Tab> <action>(NextTab)
+nmap <S-Tab> <action>(PreviousTab)
+
+" Center cursor
+nmap <C-d> <C-d>zz
+nmap <C-u> <C-u>zz
+
