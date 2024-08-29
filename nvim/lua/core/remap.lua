@@ -24,3 +24,5 @@ vim.keymap.set('n', '<leader>k', '<cmd>lprev<CR>zz')
 
 -- Open explorer
 vim.keymap.set('n', '-', '<cmd>Oil<CR>')
+
+vim.keymap.set('i', 'jk', '<Esc>')

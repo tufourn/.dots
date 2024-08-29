@@ -1,40 +1,22 @@
 # set mod
 set $mod Mod4
-set $scripts_folder = "/home/tufourn/.config/i3/scripts"
 
 # set font
 font pango:JetBrainsMonoNerdFont 8
 
 # hide window title bar
-default_border pixel 2
+default_border pixel 4
 default_floating_border pixel 4
 
-gaps inner 4
+### gaps
+# gaps inner 4
 
 ### background apps ###
-
-# run picom
-exec_always --no-startup-id picom 
-
-# run mpd
-exec_always --no-startup-id mpd
-
-# run dunst
-exec_always --no-startup-id dunst
-
-# set wallpaper with nitrogen
-exec_always --no-startup-id nitrogen --restore 
 
 # run i3-auto-layout
 # install with following command
 # $ cargo install i3-autolayout
 exec_always --no-startup-id $HOME/.cargo/bin/i3-autolayout autolayout
-
-set $screen_laptop "eDP-1"
-set $screen_mid "DP-1-0"
-set $screen_right "HDMI-1"
-
-exec --no-startup-id xrandr --output $screen_laptop --pos 0x1480
 
 # start i3 components
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
@@ -72,23 +54,11 @@ bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
 # move focused window
 bindsym $mod+Shift+H move left
 bindsym $mod+Shift+J move down
 bindsym $mod+Shift+K move up
 bindsym $mod+Shift+L move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
 bindsym $mod+w split h
@@ -116,7 +86,6 @@ bindsym $mod+a focus parent
 # focus the child container
 bindsym $mod+o focus child
 
-# define workspace names
 set $ws1 "1"
 set $ws2 "2"
 set $ws3 "3"
@@ -128,10 +97,6 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-# assign workspaces to monitors
-# exec_always $scripts_folder/assign_workspace.sh
-
-# switch to workspace
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
 bindsym $mod+3 workspace number $ws3
@@ -143,7 +108,6 @@ bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws10
 
-# move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1
 bindsym $mod+Shift+2 move container to workspace number $ws2
 bindsym $mod+Shift+3 move container to workspace number $ws3
@@ -155,33 +119,16 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# reload the configuration file
 bindsym $mod+Shift+R reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+P restart
-# exit i3 (logs you out of your X session)
 bindsym $mod+Shift+E exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
-# resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
         bindsym h resize shrink width 10 px or 10 ppt
         bindsym j resize grow height 10 px or 10 ppt
         bindsym k resize shrink height 10 px or 10 ppt
         bindsym l resize grow width 10 px or 10 ppt
 
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
         bindsym Escape mode "default"
         bindsym $mod+p mode "default"
@@ -191,5 +138,6 @@ bindsym $mod+r mode "resize"
 
 bindsym Print exec "flameshot gui"
 
-# start polybar
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+bar {
+        status_command i3status
+}
