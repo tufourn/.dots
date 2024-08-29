@@ -1,4 +1,4 @@
--- [[ Basic Keymaps ]]
+-- Basic Keymaps
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -25,4 +25,5 @@ vim.keymap.set('n', '<leader>k', '<cmd>lprev<CR>zz')
 -- Open explorer
 vim.keymap.set('n', '-', '<cmd>Oil<CR>')
 
+-- Bind jk to esc
 vim.keymap.set('i', 'jk', '<Esc>')
