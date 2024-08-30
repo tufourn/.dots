@@ -80,6 +80,18 @@ require('lazy').setup({
   },
   {
     'mfussenegger/nvim-dap',
+    config = function()
+      vim.api.nvim_set_hl(0, 'green', { fg = '#9ece6a' })
+      vim.api.nvim_set_hl(0, 'yellow', { fg = '#FFFF00' })
+      vim.api.nvim_set_hl(0, 'orange', { fg = '#f09000' })
+      vim.api.nvim_set_hl(0, 'red', { fg = '#880808' })
+
+      vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
+      vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'red', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
+      vim.fn.sign_define('DapBreakpointRejected', { text = '', texthl = 'orange', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
+      vim.fn.sign_define('DapStopped', { text = '', texthl = 'green', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
+      vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'yellow', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
+    end,
     keys = {
       {
         '<leader>db',
@@ -135,7 +147,16 @@ require('lazy').setup({
   {
     'akinsho/toggleterm.nvim',
     version = '*',
-    config = true,
+    config = function()
+      local toggleterm = require 'toggleterm'
+      toggleterm.setup {
+        open_mapping = [[<C-\>]],
+        hide_numbers = true,
+        start_in_insert = true,
+        shade_terminals = true,
+        shading_factor = -100,
+      }
+    end,
   },
   { 'tpope/vim-sleuth' },
   {
@@ -307,7 +328,6 @@ require('lazy').setup({
       }
     end,
   },
-
   {
     'stevearc/conform.nvim',
     lazy = false,
@@ -324,7 +344,7 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = {}
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -332,10 +352,13 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        cpp = { 'clang-format' },
+      },
+      formatters = {
+        clang_format = { prepend_args = { '--style=file', '--fallback-style=LLVM' } },
       },
     },
   },
-
   {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -409,7 +432,7 @@ require('lazy').setup({
 
   {
     'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    priority = 1000,
     init = function()
       vim.cmd.colorscheme 'tokyonight-night'
       vim.cmd.hi 'Comment gui=none'
