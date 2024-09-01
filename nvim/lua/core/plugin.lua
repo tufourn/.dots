@@ -80,18 +80,6 @@ require('lazy').setup({
   },
   {
     'mfussenegger/nvim-dap',
-    config = function()
-      vim.api.nvim_set_hl(0, 'green', { fg = '#9ece6a' })
-      vim.api.nvim_set_hl(0, 'yellow', { fg = '#FFFF00' })
-      vim.api.nvim_set_hl(0, 'orange', { fg = '#f09000' })
-      vim.api.nvim_set_hl(0, 'red', { fg = '#880808' })
-
-      vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'red', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapBreakpointRejected', { text = '', texthl = 'orange', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapStopped', { text = '', texthl = 'green', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'yellow', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-    end,
     keys = {
       {
         '<leader>db',
@@ -294,6 +282,7 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local servers = {
+        -- zls = {},
         codelldb = {},
         clangd = {},
         pyright = {},
@@ -344,18 +333,24 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        local disable_filetypes = {}
+        local disable_filetypes = { c = true, cpp = true }
+        local lsp_format_opt
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          lsp_format_opt = 'never'
+        else
+          lsp_format_opt = 'fallback'
+        end
         return {
           timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+          lsp_fallback = lsp_format_opt,
         }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        cpp = { 'clang-format' },
+        -- cpp = { 'clang-format' },
       },
       formatters = {
-        clang_format = { prepend_args = { '--style=file', '--fallback-style=LLVM' } },
+        -- clang_format = { prepend_args = { '--style=file', '--fallback-style=LLVM' } },
       },
     },
   },
@@ -429,16 +424,14 @@ require('lazy').setup({
       }
     end,
   },
-
   {
-    'folke/tokyonight.nvim',
+    'rose-pine/neovim',
     priority = 1000,
     init = function()
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'rose-pine-dawn'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-
   {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
@@ -465,7 +458,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'zig' },
       auto_install = true,
       highlight = {
         enable = true,
