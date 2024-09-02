@@ -7,6 +7,12 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   {
+    'mbbill/undotree',
+    config = function()
+      vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+    end,
+  },
+  {
     'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup {
@@ -141,8 +147,6 @@ require('lazy').setup({
         open_mapping = [[<C-\>]],
         hide_numbers = true,
         start_in_insert = true,
-        shade_terminals = true,
-        shading_factor = -100,
       }
     end,
   },
@@ -282,7 +286,9 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local servers = {
-        -- zls = {},
+        zls = {
+          cmd = { '/usr/local/bin/zls' },
+        },
         codelldb = {},
         clangd = {},
         pyright = {},
@@ -333,7 +339,7 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, zig = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
@@ -347,7 +353,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- cpp = { 'clang-format' },
+        cpp = { 'clang-format' },
+        zig = { 'zig fmt' },
       },
       formatters = {
         -- clang_format = { prepend_args = { '--style=file', '--fallback-style=LLVM' } },
@@ -438,7 +445,6 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
   },
-
   {
     'echasnovski/mini.nvim',
     config = function()
