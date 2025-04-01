@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 FONT_DIR="$HOME/.local/share/fonts"
 

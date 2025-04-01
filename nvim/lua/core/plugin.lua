@@ -9,33 +9,27 @@ require('lazy').setup({
   {
     'mbbill/undotree',
     config = function()
-      vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+      vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = 'Toggle [U]ndotree' })
     end,
   },
   {
     'lewis6991/gitsigns.nvim',
     config = function()
-      require('gitsigns').setup {
-        signs = {
-          add = { text = '┃' },
-          change = { text = '┃' },
-          delete = { text = '⊥' },
-          topdelete = { text = 'T' },
-          changedelete = { text = '~' },
-          untracked = { text = '┆' },
-        },
-        signs_staged = {
-          add = { text = '┃' },
-          change = { text = '┃' },
-          delete = { text = '⊥' },
-          topdelete = { text = 'T' },
-          changedelete = { text = '~' },
-          untracked = { text = '┆' },
-        },
-      }
+      require('gitsigns').setup {}
     end,
   },
-  { 'tpope/vim-fugitive' },
+  {
+    'numToStr/FTerm.nvim',
+    config = function()
+      local fterm = require 'FTerm'
+      vim.keymap.set('n', '<C-\\>', function()
+        fterm:toggle()
+      end, { desc = 'Toggle Terminal' })
+      vim.keymap.set('t', '<C-\\>', function()
+        fterm:toggle()
+      end, { desc = 'Toggle Terminal' })
+    end,
+  },
   {
     'folke/which-key.nvim',
     event = 'VeryLazy',
@@ -49,106 +43,6 @@ require('lazy').setup({
         desc = 'Buffer Local Keymaps (which-key)',
       },
     },
-  },
-  {
-    'rcarriga/nvim-dap-ui',
-    event = 'VeryLazy',
-    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
-    config = function()
-      local dap = require 'dap'
-      local dapui = require 'dapui'
-      dapui.setup()
-
-      dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated.dapui_config = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited.dapui_config = function()
-        dapui.close()
-      end
-    end,
-  },
-  {
-    'jay-babu/mason-nvim-dap.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      'williamboman/mason.nvim',
-      'mfussenegger/nvim-dap',
-    },
-    opts = {
-      handlers = {},
-    },
-  },
-  {
-    'mfussenegger/nvim-dap',
-    keys = {
-      {
-        '<leader>db',
-        function()
-          require('dap').toggle_breakpoint()
-        end,
-        desc = 'DapToggleBreakpoint',
-      },
-      {
-        '<leader>dr',
-        function()
-          require('dap').continue()
-        end,
-        desc = 'DapContinue',
-      },
-      {
-        '<leader>di',
-        function()
-          require('dap').step_into()
-        end,
-        desc = 'DapStepInto',
-      },
-      {
-        '<leader>do',
-        function()
-          require('dap').step_out()
-        end,
-        desc = 'DapStepOut',
-      },
-      {
-        '<leader>dh',
-        function()
-          require('dap').step_over()
-        end,
-        desc = 'DapStepOver',
-      },
-      {
-        '<leader>dt',
-        function()
-          require('dap').terminate()
-        end,
-        desc = 'DapTerminate',
-      },
-      {
-        '<leader>dc',
-        function()
-          require('dap').clear_breakpoints()
-        end,
-        desc = 'DapClearBreakpoints',
-      },
-    },
-  },
-  {
-    'akinsho/toggleterm.nvim',
-    version = '*',
-    config = function()
-      local toggleterm = require 'toggleterm'
-      toggleterm.setup {
-        open_mapping = [[<C-\>]],
-        hide_numbers = true,
-        start_in_insert = true,
-      }
-    end,
   },
   { 'tpope/vim-sleuth' },
   {
@@ -184,7 +78,15 @@ require('lazy').setup({
       end, { desc = 'Harpoon to file 4' })
     end,
   },
-  { 'stevearc/oil.nvim', opts = {} },
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    config = function()
+      local oil = require 'oil'
+      oil.setup {}
+      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+    end,
+  },
   {
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -243,11 +145,11 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
+      'folke/lazydev.nvim',
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'j-hui/fidget.nvim', opts = {} },
-      { 'folke/neodev.nvim', opts = {} },
     },
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -286,12 +188,8 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local servers = {
-        zls = {
-          cmd = { '/usr/local/bin/zls' },
-        },
         codelldb = {},
         clangd = {},
-        pyright = {},
         rust_analyzer = {},
         lua_ls = {
           settings = {
@@ -323,14 +221,15 @@ require('lazy').setup({
       }
     end,
   },
-  {
+  { -- Autoformat
     'stevearc/conform.nvim',
-    lazy = false,
+    event = { 'BufWritePre' },
+    cmd = { 'ConformInfo' },
     keys = {
       {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_fallback = true }
+          require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
         desc = '[F]ormat buffer',
@@ -339,25 +238,26 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        local disable_filetypes = { c = true, cpp = true, zig = true }
-        local lsp_format_opt
+        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- have a well standardized coding style. You can add additional
+        -- languages here or re-enable it for the disabled ones.
+        local disable_filetypes = { c = true, cpp = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
+          return nil
         else
-          lsp_format_opt = 'fallback'
+          return {
+            timeout_ms = 500,
+            lsp_format = 'fallback',
+          }
         end
-        return {
-          timeout_ms = 500,
-          lsp_fallback = lsp_format_opt,
-        }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        cpp = { 'clang-format' },
-        zig = { 'zig fmt' },
-      },
-      formatters = {
-        -- clang_format = { prepend_args = { '--style=file', '--fallback-style=LLVM' } },
+        -- Conform can also run multiple formatters sequentially
+        -- python = { "isort", "black" },
+        --
+        -- You can use 'stop_after_first' to run the first available formatter from the list
+        -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
     },
   },
@@ -440,6 +340,10 @@ require('lazy').setup({
     end,
   },
   {
+    'numToStr/Comment.nvim',
+    opts = {},
+  },
+  {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
@@ -464,7 +368,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'zig' },
+      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
       auto_install = true,
       highlight = {
         enable = true,
