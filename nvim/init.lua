@@ -1,4 +1,4 @@
-require 'core.remap'
-require 'core.set'
-require 'core.plugin'
-require 'core.autocmd'
+require 'remap'
+require 'set'
+require 'plugins'
+require 'autocmd'

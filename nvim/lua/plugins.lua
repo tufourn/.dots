@@ -5,127 +5,8 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
-require('lazy').setup({
-  {
-    'mfussenegger/nvim-dap',
-    dependencies = {
-      'rcarriga/nvim-dap-ui',
-      'nvim-neotest/nvim-nio',
-      'theHamsta/nvim-dap-virtual-text',
-      'williamboman/mason.nvim',
-      'jay-babu/mason-nvim-dap.nvim',
-    },
-    keys = {
-      -- Basic debugging keymaps, feel free to change to your liking!
-      {
-        '<F5>',
-        function()
-          require('dap').continue()
-        end,
-        desc = 'Debug: Start/Continue',
-      },
-      {
-        '<F1>',
-        function()
-          require('dap').step_into()
-        end,
-        desc = 'Debug: Step Into',
-      },
-      {
-        '<F2>',
-        function()
-          require('dap').step_over()
-        end,
-        desc = 'Debug: Step Over',
-      },
-      {
-        '<F3>',
-        function()
-          require('dap').step_out()
-        end,
-        desc = 'Debug: Step Out',
-      },
-      {
-        '<leader>b',
-        function()
-          require('dap').toggle_breakpoint()
-        end,
-        desc = 'Debug: Toggle Breakpoint',
-      },
-      {
-        '<leader>B',
-        function()
-          require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-        end,
-        desc = 'Debug: Set Breakpoint',
-      },
-      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      {
-        '<F7>',
-        function()
-          require('dapui').toggle()
-        end,
-        desc = 'Debug: See last session result.',
-      },
-    },
-    config = function()
-      local dap = require 'dap'
-      local dapui = require 'dapui'
-      require('mason-nvim-dap').setup {
-        automatic_installation = true,
-        handlers = {},
-        ensure_installed = { 'codelldb' },
-      }
-
-      dapui.setup {
-        icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-        controls = {
-          icons = {
-            pause = '⏸',
-            play = '▶',
-            step_into = '⏎',
-            step_over = '⏭',
-            step_out = '⏮',
-            step_back = 'b',
-            run_last = '▶▶',
-            terminate = '⏹',
-            disconnect = '⏏',
-          },
-        },
-      }
-
-      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-      dap.listeners.before.event_exited['dapui_config'] = dapui.close
-
-      -- C/C++/Rust
-      dap.adapters.codelldb = {
-        type = 'executable',
-        command = 'codelldb',
-
-        -- On windows you may have to uncomment this:
-        -- detached = false,
-      }
-      dap.configurations.cpp = {
-        name = 'Launch file',
-        type = 'codelldb',
-        request = 'launch',
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
-        cwd = '${workspaceFolder}',
-        stopOnEntry = false,
-      }
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = dap.configurations.cpp
-
-      -- Godot
-      dap.adapters.godot = { type = 'server', host = '127.0.0.1', port = 6006 }
-      dap.configurations.gdscript = {
-        { type = 'godot', request = 'launch', name = 'Launch scene', project = '${workspaceFolder}' },
-      }
-    end,
-  },
+require('lazy').setup {
+  require 'plugins/dap',
   {
     'mbbill/undotree',
     config = function()
@@ -134,9 +15,58 @@ require('lazy').setup({
   },
   {
     'lewis6991/gitsigns.nvim',
-    config = function()
-      require('gitsigns').setup {}
-    end,
+    opts = {
+      on_attach = function(bufnr)
+        local gitsigns = require 'gitsigns'
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end, { desc = 'Jump to next git [c]hange' })
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gitsigns.nav_hunk 'prev'
+          end
+        end, { desc = 'Jump to previous git [c]hange' })
+
+        -- Actions
+        -- visual mode
+        map('v', '<leader>hs', function()
+          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'git [s]tage hunk' })
+        map('v', '<leader>hr', function()
+          gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'git [r]eset hunk' })
+        -- normal mode
+        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
+        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
+        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'git [S]tage buffer' })
+        map('n', '<leader>hu', gitsigns.stage_hunk, { desc = 'git [u]ndo stage hunk' })
+        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
+        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
+        map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
+        map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
+        map('n', '<leader>hD', function()
+          gitsigns.diffthis '@'
+        end, { desc = 'git [D]iff against last commit' })
+        -- Toggles
+        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
+        map('n', '<leader>tD', gitsigns.preview_hunk_inline, { desc = '[T]oggle git show [D]eleted' })
+      end,
+    },
   },
   {
     'numToStr/FTerm.nvim',
@@ -488,39 +418,29 @@ require('lazy').setup({
       end
     end,
   },
-  {
+  { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
         enable = true,
+        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+        --  If you are experiencing weird indenting issues, add the language to
+        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
-    config = function(_, opts)
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
-    end,
+    -- There are additional nvim-treesitter modules that you can use to interact
+    -- with nvim-treesitter. You should go explore a few and see what interests you:
+    --
+    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
-}, {
-  ui = {
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
-})
+}
