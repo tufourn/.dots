@@ -2,7 +2,7 @@
 set $mod Mod4
 
 # set font
-font pango:JetBrainsMono Nerd Font 8
+font pango:JetBrainsMono Nerd Font Extra Bold 10
 
 # hide window title bar
 default_border pixel 4
@@ -41,7 +41,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec wezterm
 
 # kill focused window
 bindsym $mod+q kill
