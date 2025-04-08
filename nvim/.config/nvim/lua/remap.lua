@@ -30,3 +30,6 @@ vim.keymap.set('n', '<leader>Y', [["+Y]])
 -- Clear highlight search
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Switch buffers
+vim.keymap.set('n', '<Tab>', '<cmd>bnext<CR>')
+vim.keymap.set('n', '<S-Tab>', '<cmd>bprev<CR>')
