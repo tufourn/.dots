@@ -9,6 +9,12 @@ local M = {
     'nvim-telescope/telescope.nvim',
     'nvim-telescope/telescope-dap.nvim',
   },
+  element_mappings = {
+    stacks = {
+      open = '<CR>',
+      expand = 'o',
+    },
+  },
 }
 
 local last_run = nil
@@ -63,6 +69,13 @@ M.config = function()
   keymap('<leader>dd', "<cmd>lua require('dap').disconnect()<CR>", 'DAP: Disconnect')
   keymap('<leader>db', "<cmd>lua require('dap').toggle_breakpoint()<CR>", 'DAP: Set Breakpoint')
   keymap('<leader>dB', "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", 'DAP: Set Breakpoint Condition')
+
+  keymap('<leader>dp', function()
+    dap.up()
+  end, 'DAP: Stack Up')
+  keymap('<leader>dn', function()
+    dap.down()
+  end, 'DAP: Stack Down')
 
   local telescope_dap = require('telescope').extensions.dap
   keymap('<leader>d?', function()

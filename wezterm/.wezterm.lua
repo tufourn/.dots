@@ -15,6 +15,9 @@ config.use_fancy_tab_bar = false
 -- Disable ligature
 config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
 
+-- font
+config.font_size = 14
+
 -- Initial window size
 config.initial_rows = 48
 config.initial_cols = 120
