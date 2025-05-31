@@ -62,3 +62,7 @@ vim.opt.shiftwidth = 4
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldenable = false
+
+-- termguicolors
+vim.opt.termguicolors = true
+vim.opt.background = 'light'

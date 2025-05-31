@@ -411,11 +411,19 @@ require('lazy').setup {
       }
     end,
   },
+  -- {
+  --   'rose-pine/neovim',
+  --   priority = 1000,
+  --   init = function()
+  --     vim.cmd.colorscheme 'rose-pine'
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
   {
-    'rose-pine/neovim',
+    'NLKNguyen/papercolor-theme',
     priority = 1000,
     init = function()
-      vim.cmd.colorscheme 'rose-pine-dawn'
+      vim.cmd.colorscheme 'PaperColor'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
