@@ -4,6 +4,9 @@ set $mod Mod4
 # set font
 font pango:JetBrainsMono Nerd Font Extra Bold 10
 
+# fix my g14 screen issue
+exec_always --no-startup-id xrandr -r 60
+
 # hide window title bar
 default_border pixel 4
 default_floating_border pixel 4
@@ -15,7 +18,7 @@ default_floating_border pixel 4
 exec_always --no-startup-id $HOME/.cargo/bin/i3-autolayout autolayout
 
 # wallpaper with feh
-exec_always --no-startup-id feh --bg-max $HOME/.dots/wallpaper/bikergirl.jpg
+exec_always --no-startup-id feh --bg-max $HOME/.dots/wallpaper/animegirl.webp
 
 # start i3 components
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
