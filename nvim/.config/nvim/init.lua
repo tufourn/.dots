@@ -1,4 +1,4 @@
-require 'remap'
 require 'set'
-require 'plugins'
+require 'remap'
 require 'autocmd'
+require 'plugins'
