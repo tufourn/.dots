@@ -6,6 +6,7 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
+  require 'plugins/themes',
   require 'plugins/dap',
   require 'plugins/aerial',
   {
@@ -410,22 +411,6 @@ require('lazy').setup {
           { name = 'path' },
         },
       }
-    end,
-  },
-  -- {
-  --   'rose-pine/neovim',
-  --   priority = 1000,
-  --   init = function()
-  --     vim.cmd.colorscheme 'rose-pine'
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-  {
-    'NLKNguyen/papercolor-theme',
-    priority = 1000,
-    init = function()
-      vim.cmd.colorscheme 'PaperColor'
-      vim.cmd.hi 'Comment gui=none'
     end,
   },
   {

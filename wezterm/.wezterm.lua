@@ -6,7 +6,7 @@ local config = wezterm.config_builder()
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 
 -- Theme
-config.color_scheme = "PaperColor Light (base16)"
+config.color_scheme = "Catppuccin Latte"
 
 -- Remove titlebar
 config.window_decorations = "RESIZE"
@@ -21,5 +21,8 @@ config.font_size = 14
 -- Initial window size
 config.initial_rows = 48
 config.initial_cols = 120
+
+-- Using tmux so no need for multiple tabs
+config.enable_tab_bar = false
 
 return config
