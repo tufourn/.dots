@@ -66,3 +66,8 @@ vim.opt.foldenable = false
 -- termguicolors
 vim.opt.termguicolors = true
 vim.opt.background = 'light'
+
+-- virtual text diagnostic
+vim.diagnostic.config {
+  virtual_text = { current_line = true },
+}
