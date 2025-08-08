@@ -16,6 +16,7 @@ config.use_fancy_tab_bar = false
 config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
 
 -- font
+config.font = wezterm.font("Iosevka Term")
 config.font_size = 14
 
 -- Initial window size
